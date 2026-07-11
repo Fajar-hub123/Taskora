@@ -1,11 +1,11 @@
 import { Category } from './types';
 
 let order = 0;
-const next = () => order++;
-
+const next = () => order++
 export const DEFAULT_CATEGORIES: Category[] = [
   {
     id: 'education',
+    ownerId: 'default',
     name: 'Education',
     group: 'Education',
     color: '#8b5cf6',
@@ -25,21 +25,38 @@ export const DEFAULT_CATEGORIES: Category[] = [
   },
   {
     id: 'entertainment',
+    ownerId: 'default',
     name: 'Entertainment',
     group: 'Entertainment',
     color: '#2dd4bf',
     icon: 'Clapperboard',
     order: next(),
-    subcategories: ['Anime', 'Movies & TV Shows', 'Video Games', 'Social Media', 'Music', 'Books & Manga']
+    subcategories: [
+      'Anime',
+      'Movies & TV Shows',
+      'Video Games',
+      'Social Media',
+      'Music',
+      'Books & Manga'
+    ]
   },
   {
     id: 'personal',
+    ownerId: 'default',
     name: 'Personal',
     group: 'Personal',
     color: '#f472b6',
     icon: 'Heart',
     order: next(),
-    subcategories: ['Chores', 'Exercise', 'Health', 'Reading', 'Family', 'Shopping', 'Self-Care']
+    subcategories: [
+      'Chores',
+      'Exercise',
+      'Health',
+      'Reading',
+      'Family',
+      'Shopping',
+      'Self-Care'
+    ]
   }
 ];
 
