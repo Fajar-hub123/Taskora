@@ -72,7 +72,7 @@ export function TaskRow({ task, category }: { task: Task; category?: Category })
             </Badge>
           )}
           <PriorityBadge priority={task.priority} />
-          {task.tags?.length > 0 &&
+          {task.tags && task.tags.length > 0 &&
             task.tags.map((tag) => (
               <Badge key={tag} className="bg-surface-3 text-ink-muted">
                 #{tag}
