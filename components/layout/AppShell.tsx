@@ -14,7 +14,8 @@ import {
   Plus,
   Menu,
   X,
-  FolderKanban
+  FolderKanban,
+  Inbox
 } from 'lucide-react';
 import { TaskoraMark } from '@/components/logo/TaskoraLogo';
 import { ToraLogo } from '@/components/logo/ToraLogo';
@@ -27,6 +28,7 @@ import clsx from 'clsx';
 const NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/tasks', label: 'Tasks', icon: ListChecks },
+  { href: '/backlog', label: 'Backlog', icon: Inbox },
   { href: '/calendar', label: 'Calendar', icon: CalendarDays },
   { href: '/categories', label: 'Categories', icon: FolderKanban },
   { href: '/reports', label: 'Reports', icon: BarChart3 },

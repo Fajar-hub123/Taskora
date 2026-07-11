@@ -30,7 +30,7 @@ export default function TasksPage() {
   const [priorityFilter, setPriorityFilter] = useState('all');
 
   const tasks = useMemo(() => {
-    let list = tasksAll.filter((t) => t.ownerId === userId);
+    let list = tasksAll.filter((t) => t.ownerId === userId && t.date !== '');
     if (statusFilter === 'active') list = list.filter((t) => !t.archived);
     if (statusFilter === 'archived') list = list.filter((t) => t.archived);
     if (statusFilter === 'completed') list = list.filter((t) => t.status === 'completed' && !t.archived);

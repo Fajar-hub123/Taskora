@@ -31,7 +31,7 @@ export default function DashboardPage() {
   const categories = useTaskStore((s) => s.categoriesForOwner(userId ?? ''));
   const activity = useTaskStore((s) => s.activity);
 
-  const tasks = useMemo(() => tasksAll.filter((t) => t.ownerId === userId && !t.archived), [tasksAll, userId]);
+  const tasks = useMemo(() => tasksAll.filter((t) => t.ownerId === userId && !t.archived && t.date !== ''), [tasksAll, userId]);
 
   const today = todayISO();
   const todayTasks = useMemo(() => tasks.filter((t) => t.date === today).sort((a, b) => a.startTime.localeCompare(b.startTime)), [tasks, today]);

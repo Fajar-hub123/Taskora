@@ -13,6 +13,7 @@ import { todayISO } from '@/lib/utils/date';
 export function TaskModal() {
   const open = useUIStore((s) => s.addTaskOpen);
   const editingTaskId = useUIStore((s) => s.editingTaskId);
+  const creatingBacklogTask = useUIStore((s) => s.creatingBacklogTask);
   const closeTaskModal = useUIStore((s) => s.closeTaskModal);
 
   const userId = useAuthStore((s) => s.currentUserId)!;
@@ -35,6 +36,8 @@ export function TaskModal() {
   const [notes, setNotes] = useState('');
   const [repeat, setRepeat] = useState<RepeatRule>('none');
   const [isExam, setIsExam] = useState(false);
+  const [tagsInput, setTagsInput] = useState('');
+  const [saveToBacklog, setSaveToBacklog] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -51,25 +54,52 @@ export function TaskModal() {
         setNotes(editing.notes);
         setRepeat(editing.repeat);
         setIsExam(editing.isExam);
+        setTagsInput((editing.tags ?? []).join(', '));
+        setSaveToBacklog(editing.date === '');
       } else {
         setTitle('');
         setDescription('');
         setCategoryId(categories[0]?.id ?? '');
         setSubcategory('');
-        setDate(todayISO());
-        setStartTime('09:00');
-        setEndTime('10:00');
+        setDate(creatingBacklogTask ? '' : todayISO());
+        setStartTime(creatingBacklogTask ? '' : '09:00');
+        setEndTime(creatingBacklogTask ? '' : '10:00');
         setPriority('Medium');
         setReminder(false);
         setNotes('');
         setRepeat('none');
         setIsExam(false);
+        setTagsInput('');
+        setSaveToBacklog(creatingBacklogTask);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, editingTaskId]);
+  }, [open, editingTaskId, creatingBacklogTask]);
 
   const selectedCategory = categories.find((c) => c.id === categoryId);
+  const parsedTags = tagsInput.split(',').map((tag) => tag.trim()).filter(Boolean);
+
+  useEffect(() => {
+    if (!open || !editing) return;
+    const timer = window.setTimeout(() => {
+      updateTask(editing.id, {
+        title: title.trim(),
+        description,
+        categoryId,
+        subcategory,
+        date: saveToBacklog ? '' : date,
+        startTime: saveToBacklog ? '' : startTime,
+        endTime: saveToBacklog ? '' : endTime,
+        priority,
+        reminder,
+        notes,
+        repeat,
+        isExam,
+        tags: parsedTags
+      });
+    }, 600);
+    return () => window.clearTimeout(timer);
+  }, [open, editing, title, description, categoryId, subcategory, date, startTime, endTime, priority, reminder, notes, repeat, isExam, saveToBacklog, parsedTags, updateTask]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -79,12 +109,13 @@ export function TaskModal() {
       description,
       categoryId,
       subcategory,
-      date,
-      startTime,
-      endTime,
+      date: saveToBacklog ? '' : date,
+      startTime: saveToBacklog ? '' : startTime,
+      endTime: saveToBacklog ? '' : endTime,
       priority,
       reminder,
       notes,
+      tags: parsedTags,
       repeat,
       isExam
     };
@@ -136,15 +167,15 @@ export function TaskModal() {
         <div className="grid grid-cols-3 gap-3">
           <div>
             <Label htmlFor="t-date">Date</Label>
-            <Input id="t-date" type="date" required value={date} onChange={(e) => setDate(e.target.value)} />
+            <Input id="t-date" type="date" required={!saveToBacklog} disabled={saveToBacklog} value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <div>
             <Label htmlFor="t-start">Start</Label>
-            <Input id="t-start" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+            <Input id="t-start" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} disabled={saveToBacklog} />
           </div>
           <div>
             <Label htmlFor="t-end">End</Label>
-            <Input id="t-end" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+            <Input id="t-end" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} disabled={saveToBacklog} />
           </div>
         </div>
 
@@ -169,17 +200,34 @@ export function TaskModal() {
         </div>
 
         <div>
+          <Label htmlFor="t-tags">Tags</Label>
+          <Input
+            id="t-tags"
+            value={tagsInput}
+            onChange={(e) => setTagsInput(e.target.value)}
+            placeholder="Comma-separated tags"
+          />
+        </div>
+
+        <div>
           <Label htmlFor="t-notes">Notes</Label>
           <Textarea id="t-notes" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any extra notes…" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
+            <span className="text-sm">Save directly to backlog</span>
+            <Toggle checked={saveToBacklog} onChange={setSaveToBacklog} label="Backlog" />
+          </div>
+          <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
+            <span className="text-sm">This is an exam</span>
+            <Toggle checked={isExam} onChange={setIsExam} label="Exam" />
+          </div>
         </div>
 
         <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
           <span className="text-sm">Remind me</span>
           <Toggle checked={reminder} onChange={setReminder} label="Reminder" />
-        </div>
-        <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
-          <span className="text-sm">This is an exam</span>
-          <Toggle checked={isExam} onChange={setIsExam} label="Exam" />
         </div>
 
         <div className="flex justify-end gap-2 pt-2">

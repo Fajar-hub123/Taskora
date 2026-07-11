@@ -39,7 +39,7 @@ export default function CalendarPage() {
   const [view, setView] = useState<ViewMode>('month');
   const [cursor, setCursor] = useState(new Date());
 
-  const tasks = useMemo(() => tasksAll.filter((t) => t.ownerId === userId && !t.archived), [tasksAll, userId]);
+  const tasks = useMemo(() => tasksAll.filter((t) => t.ownerId === userId && !t.archived && t.date !== ''), [tasksAll, userId]);
 
   const monthStart = startOfMonth(cursor);
   const gridStart = startOfWeek(monthStart);

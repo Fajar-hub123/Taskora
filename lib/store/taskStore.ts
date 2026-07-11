@@ -59,13 +59,17 @@ export const useTaskStore = create<TaskState>()(
           description: input.description ?? '',
           categoryId: input.categoryId ?? '',
           subcategory: input.subcategory ?? '',
-          date: input.date ?? todayISO(),
-          startTime: input.startTime ?? '09:00',
-          endTime: input.endTime ?? '10:00',
+          date: input.date === undefined ? todayISO() : input.date,
+          startTime:
+            input.date === '' ? input.startTime ?? '' : input.startTime ?? '09:00',
+          endTime:
+            input.date === '' ? input.endTime ?? '' : input.endTime ?? '10:00',
           priority: input.priority ?? 'Medium',
           reminder: input.reminder ?? false,
           reminderMinutesBefore: input.reminderMinutesBefore ?? 10,
           notes: input.notes ?? '',
+          tags: input.tags ?? [],
+          favorite: input.favorite ?? false,
           status: input.status ?? 'pending',
           pinned: input.pinned ?? false,
           archived: false,
@@ -108,7 +112,9 @@ export const useTaskStore = create<TaskState>()(
           title: task.title + ' (copy)',
           status: 'pending',
           createdAt: new Date().toISOString(),
-          order: get().tasks.length
+          order: get().tasks.length,
+          tags: task.tags ?? [],
+          favorite: task.favorite ?? false
         };
         set({ tasks: [...get().tasks, copy] });
         get().logActivity(task.ownerId, 'created', copy.title);
@@ -116,6 +122,9 @@ export const useTaskStore = create<TaskState>()(
 
       togglePin: (id) => {
         set({ tasks: get().tasks.map((t) => (t.id === id ? { ...t, pinned: !t.pinned } : t)) });
+      },
+      toggleFavorite: (id) => {
+        set({ tasks: get().tasks.map((t) => (t.id === id ? { ...t, favorite: !t.favorite } : t)) });
       },
 
       toggleComplete: (id) => {
@@ -150,7 +159,19 @@ export const useTaskStore = create<TaskState>()(
       },
 
       moveTaskToDate: (id, date) => {
-        set({ tasks: get().tasks.map((t) => (t.id === id ? { ...t, date } : t)) });
+        const task = get().tasks.find((t) => t.id === id);
+        set({
+          tasks: get().tasks.map((t) =>
+            t.id === id
+              ? {
+                  ...t,
+                  date,
+                  startTime: date && !t.startTime ? '09:00' : t.startTime,
+                  endTime: date && !t.endTime ? '10:00' : t.endTime
+                }
+              : t
+          )
+        });
       },
 
       addCategory: (ownerId, cat) => {

@@ -35,13 +35,15 @@ export interface Task {
   description: string;
   categoryId: string;
   subcategory: string;
-  date: string; // ISO date (yyyy-MM-dd)
-  startTime: string; // HH:mm
-  endTime: string; // HH:mm
+  date: string; // ISO date (yyyy-MM-dd) or empty for backlog
+  startTime: string; // HH:mm or empty for backlog
+  endTime: string; // HH:mm or empty for backlog
   priority: Priority;
   reminder: boolean;
   reminderMinutesBefore: number;
   notes: string;
+  tags?: string[];
+  favorite?: boolean;
   status: TaskStatus;
   pinned: boolean;
   archived: boolean;
