@@ -14,6 +14,7 @@ export function TaskModal() {
   const open = useUIStore((s) => s.addTaskOpen);
   const editingTaskId = useUIStore((s) => s.editingTaskId);
   const creatingBacklogTask = useUIStore((s) => s.creatingBacklogTask);
+  const newTaskDate = useUIStore((s) => s.newTaskDate);
   const closeTaskModal = useUIStore((s) => s.closeTaskModal);
 
   const userId = useAuthStore((s) => s.currentUserId)!;
@@ -61,16 +62,17 @@ export function TaskModal() {
         setDescription('');
         setCategoryId(categories[0]?.id ?? '');
         setSubcategory('');
-        setDate(creatingBacklogTask ? '' : todayISO());
-        setStartTime(creatingBacklogTask ? '' : '09:00');
-        setEndTime(creatingBacklogTask ? '' : '10:00');
+        const initialDate = newTaskDate ?? (creatingBacklogTask ? '' : todayISO());
+        setDate(initialDate);
+        setStartTime(initialDate === '' ? '' : '09:00');
+        setEndTime(initialDate === '' ? '' : '10:00');
         setPriority('Medium');
         setReminder(false);
         setNotes('');
         setRepeat('none');
         setIsExam(false);
         setTagsInput('');
-        setSaveToBacklog(creatingBacklogTask);
+        setSaveToBacklog(creatingBacklogTask || initialDate === '');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

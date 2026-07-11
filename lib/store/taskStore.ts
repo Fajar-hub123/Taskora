@@ -19,6 +19,7 @@ interface TaskState {
   undoDelete: () => void;
   duplicateTask: (id: string) => void;
   togglePin: (id: string) => void;
+  toggleFavorite: (id: string) => void;
   toggleComplete: (id: string) => void;
   archiveTask: (id: string) => void;
   restoreTask: (id: string) => void;

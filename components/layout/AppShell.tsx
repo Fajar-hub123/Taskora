@@ -182,7 +182,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               Ask Tora
             </button>
             <button
-              onClick={openAddTask}
+              onClick={() => openAddTask()}
               className="flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-gradient-to-r from-violet-500 via-blue-500 to-mint-500 text-white text-sm font-medium shadow-glow"
               title="New task (n)"
             >

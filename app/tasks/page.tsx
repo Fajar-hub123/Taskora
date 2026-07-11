@@ -73,7 +73,7 @@ export default function TasksPage() {
           <h1 className="font-display text-2xl font-semibold">Tasks</h1>
           <p className="text-ink-muted text-sm">{tasks.length} task{tasks.length !== 1 ? 's' : ''}</p>
         </div>
-        <Button onClick={openAddTask}>+ New task</Button>
+        <Button onClick={() => openAddTask()}>+ New task</Button>
       </div>
 
       <div className="flex flex-wrap gap-3 mb-6">

@@ -87,7 +87,7 @@ export default function CalendarPage() {
               {v}
             </button>
           ))}
-          <Button size="sm" onClick={openAddTask}>
+          <Button size="sm" onClick={() => openAddTask()}>
             + New task
           </Button>
         </div>
@@ -136,7 +136,7 @@ export default function CalendarPage() {
                 monthRef={cursor}
                 tasks={tasksOn(format(d, 'yyyy-MM-dd'))}
                 onSelect={openEditTask}
-                onAdd={openAddTask}
+                onAdd={(dateStr) => openAddTask(dateStr)}
               />
             ))}
           </div>
