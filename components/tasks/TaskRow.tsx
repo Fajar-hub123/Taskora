@@ -8,6 +8,7 @@ import { Check, Pin, Copy, Archive, Trash2, Pencil, GripVertical, GraduationCap,
 import clsx from 'clsx';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { todayISO } from '@/lib/utils/date';
 
 export function TaskRow({ task, category }: { task: Task; category?: Category }) {
   const toggleComplete = useTaskStore((s) => s.toggleComplete);
@@ -16,8 +17,13 @@ export function TaskRow({ task, category }: { task: Task; category?: Category })
   const duplicateTask = useTaskStore((s) => s.duplicateTask);
   const archiveTask = useTaskStore((s) => s.archiveTask);
   const deleteTask = useTaskStore((s) => s.deleteTask);
+  const moveTaskToDate = useTaskStore((s) => s.moveTaskToDate);
   const openEditTask = useUIStore((s) => s.openEditTask);
   const burst = useConfetti();
+
+  function handleScheduleToday() {
+    moveTaskToDate(task.id, todayISO());
+  }
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
   const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 };
@@ -100,7 +106,7 @@ export function TaskRow({ task, category }: { task: Task; category?: Category })
           <Copy size={14} />
         </button>
         {task.date === '' && (
-          <button onClick={() => openEditTask(task.id)} className="p-1.5 rounded-md hover:bg-surface-3 text-ink-muted hover:text-ink" title="Schedule">
+          <button onClick={handleScheduleToday} className="p-1.5 rounded-md hover:bg-surface-3 text-ink-muted hover:text-ink" title="Schedule today">
             <CalendarDays size={14} />
           </button>
         )}
